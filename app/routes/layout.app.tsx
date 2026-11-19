@@ -3,6 +3,10 @@ import type { Route } from "./+types/layout.app";
 import { Sidebar } from "~/components/sidebar";
 import { DevUI } from "~/components/dev-ui";
 import { Toaster } from "sonner";
+// PROTOTYPE (#26): Notification Feed variants
+import { identifyAndSign, knockPublicConfig } from "~/lib/knock-prototype.server";
+import { FeedProvider } from "~/components/notification-feed-prototype/feed";
+import { PrototypeSwitcher, useVariant } from "~/components/notification-feed-prototype/switcher";
 import { getCurrentUserId, getDevCountry } from "~/lib/session";
 import { getCountryTierInfo, COUNTRIES } from "~/lib/ppp";
 import { eq, and, or, sql, desc } from "drizzle-orm";
@@ -198,7 +202,12 @@ export async function loader({ request }: Route.LoaderArgs) {
       })
     : [];
 
+  const knock = currentUserId
+    ? { userId: currentUserId, token: (await identifyAndSign(currentUserId)).token, ...knockPublicConfig() }
+    : null;
+
   return {
+    knock,
     users: users.map((u) => ({ id: u.id, name: u.name, role: u.role })),
     currentUser: currentUser
       ? {
@@ -225,15 +234,22 @@ export default function AppLayout({ loaderData }: Route.ComponentProps) {
     countryTierInfo,
     countries,
     isTeamAdmin: userIsTeamAdmin,
+    knock,
   } = loaderData;
+  const variant = useVariant();
 
   return (
+    <FeedProvider knock={knock}>
     <div className="flex h-screen overflow-hidden">
       <Sidebar
         currentUser={currentUser}
         recentCourses={recentCourses}
         isTeamAdmin={userIsTeamAdmin}
+        headerSlot={variant.HeaderSlot && <variant.HeaderSlot />}
+        navSlot={variant.NavSlot && <variant.NavSlot />}
       />
+      {variant.Overlay && <variant.Overlay />}
+      <PrototypeSwitcher />
       <main className="flex-1 overflow-y-auto">
         <Outlet />
       </main>
@@ -246,5 +262,6 @@ export default function AppLayout({ loaderData }: Route.ComponentProps) {
       />
       <Toaster position="bottom-right" richColors closeButton />
     </div>
+    </FeedProvider>
   );
 }

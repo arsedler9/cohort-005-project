@@ -47,9 +47,11 @@ export default [
     route("settings", "routes/settings.tsx"),
     route("team", "routes/team.tsx"),
     route("redeem/:code", "routes/redeem.$code.tsx"),
+    route("notifications", "routes/prototype.notifications.tsx"), // PROTOTYPE (#26)
     // PROTOTYPE, throwaway (#28)
     route("prototype/knock", "routes/prototype.knock.tsx"),
   ]),
+  route("prototype/notify", "routes/prototype.notify.ts"), // PROTOTYPE (#26)
   route("signup", "routes/signup.tsx"),
   route("login", "routes/login.tsx"),
   route("api/switch-user", "routes/api.switch-user.ts"),
