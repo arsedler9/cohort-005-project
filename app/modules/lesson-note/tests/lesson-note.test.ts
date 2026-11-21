@@ -8,7 +8,6 @@ describe("noteDraft", () => {
       length: 0,
       max: MAX_NOTE_LENGTH,
       tooLong: false,
-      empty: true,
       unsaved: false,
       canSave: false,
     });
@@ -16,7 +15,6 @@ describe("noteDraft", () => {
 
   it("treats whitespace only as empty", () => {
     const draft = noteDraft("   \n\t ", null);
-    expect(draft.empty).toBe(true);
     expect(draft.length).toBe(0);
     expect(draft.canSave).toBe(false);
   });
@@ -53,7 +51,6 @@ describe("noteDraft", () => {
   it("cannot save a box cleared of its saved Note", () => {
     const draft = noteDraft("", "Cursor pagination");
     expect(draft.unsaved).toBe(true);
-    expect(draft.empty).toBe(true);
     expect(draft.canSave).toBe(false);
   });
 

@@ -5,7 +5,6 @@ export type NoteDraft = {
   length: number;
   max: number;
   tooLong: boolean;
-  empty: boolean;
   /** The box holds something other than the saved Note. */
   unsaved: boolean;
   canSave: boolean;
@@ -26,7 +25,6 @@ export function describeDraft(
     length,
     max: MAX_NOTE_LENGTH,
     tooLong,
-    empty,
     unsaved,
     canSave: unsaved && !empty && !tooLong,
   };
