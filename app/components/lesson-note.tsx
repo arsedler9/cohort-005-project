@@ -47,7 +47,7 @@ export function LessonNote({
             </Button>
             <NoteStatus
               error={error}
-              unsaved={draft.unsaved}
+              draft={draft}
               updatedAt={note?.updatedAt}
             />
             <CharacterCount draft={draft} />
@@ -62,15 +62,22 @@ export function LessonNote({
 
 function NoteStatus({
   error,
-  unsaved,
+  draft,
   updatedAt,
 }: {
   error: string | undefined;
-  unsaved: boolean;
+  draft: NoteDraft;
   updatedAt: string | undefined;
 }) {
   if (error) return <span className="text-sm text-destructive">{error}</span>;
-  if (unsaved && updatedAt) {
+  if (draft.tooLong) {
+    return (
+      <span className="text-sm text-destructive">
+        Note must be {draft.max} characters or fewer
+      </span>
+    );
+  }
+  if (draft.unsaved && updatedAt) {
     return (
       <span className="text-xs text-muted-foreground">Unsaved changes</span>
     );
